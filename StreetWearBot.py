@@ -1,6 +1,6 @@
 import praw, tweepy, time, sys
 
-tokenFile = "TwitterInfoPython.txt" #file containing OAuth infomation
+tokenFile = "TwitterInfoStreetwear.txt" #file containing OAuth infomation
 filename = open(tokenFile,'r')
 f = filename.readlines()
 filename.close()
@@ -17,27 +17,19 @@ auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 
-reddit = praw.Reddit('bot1')
-subreddit = reddit.subreddit('Python')
+reddit = praw.Reddit('bot2')
+subreddit = reddit.subreddit('Streetwear')
 data = {} #Contains the post data
 
 key = 1
 for submission in subreddit.stream.submissions():
-  if submission.ups > 20:
+  if submission.ups > 50:
     data["Title" + str(key)] = str(submission.title) if len(str(submission.title)) <= 50 else (str(submission.title)[:50] + "...")
     data["OP" + str(key)] = "/u/" + str(submission.author)
     data["URL" + str(key)] = str(submission.url)
-    try:
-      print("POST: " + str(key) + "\n" + data["Title" + str(key)] + "\n" 
-      + "Upvotes: " + str(submission.ups))
-      api.update_status(data["Title" + str(key)] + "\n" + "Subreddit: " + 
-        str(subreddit) + "\n" + "Poster: " + data["OP" + str(key)] + "\n" 
-        + "#Python #Reddit" + "\n" + str(data["URL" + str(key)]))
-    except tweepy.error.TweepError as e:
-      ecode = e[0][0]['code']
-      if ecode == 186:
-        continue
-      else:
-        raise
+    print("POST: " + str(key) + "\n" + data["Title" + str(key)] + "\n" 
+    + "Upvotes: " + str(submission.ups))
+    api.update_status(data["Title" + str(key)] + "\n" + "Poster: " + data["OP" + str(key)] + "\n" 
+      + "#Streetwear #Reddit" + "\n" + str(data["URL" + str(key)]))
     key+=1
-  time.sleep(60)
+  time.sleep(600)
